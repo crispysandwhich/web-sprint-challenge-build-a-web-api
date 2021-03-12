@@ -28,24 +28,17 @@ router.get('/:id', (req,res) => {
 })
 
 // [POST] /api/actions
-router.post('/', (req,res) => {
-
-  if(req.params.id > 0){
+router.post('/', [validateAction], (req,res) => {
 
     Actions.insert(req.body)
       .then(data => res.status(201).json(data) )
       .catch(e => res.status(500).json({message: 'can post bro'}))
 
-  }else{
-    res.status(500).json({message: 'this is broken'})
-  }
 
 })
 
 // [PUT] /api/actions/:id
 router.put('/:id', (req,res) => {
-
-  if (req.params.id > 0){
 
     Actions.update(req.params.id, req.body)
       .then(data => {
@@ -53,26 +46,29 @@ router.put('/:id', (req,res) => {
       })
       .catch(e => res.status(500).json({message: 'cant update'}))
 
-  }else{
-    res.status(500).json({message: 'this is broken'})
-  }
-
 })
 
 // [DELETE] /api/actions/:id
 router.delete('/:id', (req,res) => {
 
-  if(req.params.id > 0){
-
     Actions.remove(req.params.id)
       .then(() => res.status(200).json({message: 'twas deleted successfully'}))
       .catch(() => res.status(500).json({message: 'your profile cursed cant delete'}))
 
-  }else{
-    res.status(500).json({message: 'this is broken'})
-  }
+
 
 } )
+
+
+function validateAction(req, res, next) {
+  if (!req.body.project_id || !req.body.description || !req.body.notes) {
+    res.status(400).json({
+      message: 'fill it out completely'
+    })
+  } else {
+    next();
+  }
+}
 
 
 
