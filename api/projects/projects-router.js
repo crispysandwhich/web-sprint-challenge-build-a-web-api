@@ -5,7 +5,13 @@ const router = express.Router();
 const Project = require('./projects-model');
 
 router.get('/', (req, res) => {
-  console.log(Project)
+  
+  Project.get(req.params.id)
+    .then(data => {
+      res.status(200).json(data)
+    })
+    .catch(e => res.status(500).json({message: 'cant access'}))
+
 })
 
 
